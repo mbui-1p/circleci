@@ -2,6 +2,22 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  1password: onepassword/secrets@1.0.0
+steps:
+    - 1password/install-cli:
+        version: 2.18.0
+    - checkout
+    - run:
+        shell: op run -- /bin/bash
+        environment:
+          AWS_ACCESS_KEY_ID: "op://cli-vault/aws/access credentials/username"
+          AWS_SECRET_ACCESS_KEY: "op://cli-vault/aws/access credentials/password"
+        command: |
+          echo "This value will be masked: $AWS_ACCESS_KEY_ID"
+          echo "This value will be masked: $AWS_SECRET_ACCESS_KEY"
+          ./deploy-my-app.sh
+        
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
